@@ -48,4 +48,7 @@
 ## 🤝 Đóng góp  
 Fork repository và gửi pull request.  
 
-📧 **Liên hệ**: your-email@example.com  
+📧 **Liên hệ**: 
+### Võ Gia Huy
+- 💻 Full Stack Developer
+- [GitHub](https://github.com/vogiahuy257) | [Portfolio](https://vogiahuy257.github.io/VoGiaHuyProfolioReactjs/) | [Facebook](https://www.facebook.com/profile.php?id=100023020324055) | [LinkedIn](https://www.linkedin.com/in/v%C3%B5-gia-huy-2045352bb/)
