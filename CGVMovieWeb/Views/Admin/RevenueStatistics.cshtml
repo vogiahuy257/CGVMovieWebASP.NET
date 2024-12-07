@@ -1,0 +1,134 @@
+﻿@model IEnumerable<CGVMovieWeb.Models.RevenueStatisticsViewModel>
+
+@{
+    ViewBag.Title = "Admin";
+    Layout = "~/Views/Shared/LayoutAdmin.cshtml";
+
+    // Dữ liệu cho biểu đồ
+    var labels = Model.Select(x => x.Date).ToList();
+    var revenues = Model.Select(x => x.TotalRevenue).ToList();
+}
+
+<!-- Card thống kê doanh thu với biểu đồ -->
+<div class="card shadow-sm border-0 mb-4" style="background-color: var(--primary-light);">
+    <div class="card-header text-center" style="background-color: var(--primary-dark); color: var(--color-yellow);">
+        <h4 class="mb-0">Thống Kê Doanh Thu - Biểu Đồ</h4>
+    </div>
+    <div class="card-body">
+        <canvas id="revenueChart" width="300" height="100"></canvas>
+    </div>
+</div>
+
+<!-- Card thống kê doanh thu chi tiết -->
+<div class="card shadow-sm border-0" style="background-color: var(--primary-gray);">
+    <div class="card-header text-center" style="background-color: var(--primary-dark); color: var(--color-yellow);">
+        <h4 class="mb-0">Thống Kê Doanh Thu - Chi Tiết</h4>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-striped table-hover mb-0" style="background-color: var(--primary-light);">
+            <thead class="table-primary text-center">
+                <tr>
+                    <th scope="col" class="text-center">Ngày</th>
+                    <th scope="col" class="text-center">Tổng Doanh Thu</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="cursor: pointer;" onclick="showTickets('@item.Date')" class="">
+                            @item.Date
+                        </td>
+                        <td>@item.TotalRevenue.ToString("N0") VNĐ</td>
+                    </tr>
+
+                    <!-- Chi tiết vé bán được sẽ hiển thị dưới đây -->
+                    <tr id="tickets-@item.Date.Replace("/", "_")" style="display:none;">
+                        <td colspan="2">
+                            <table class="table table-bordered" style="background-color: var(--primary-light);">
+                                <thead class="table-primary text-center">
+                                    <tr>
+                                        <th>ID Vé</th>
+                                        <th>Tên Người dùng</th>
+                                        <th>Tên Phim</th>
+                                        <th>Số Ghế</th>
+                                        <th>Giá tiền</th>
+                                        <th>Phương thức thanh toán</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var ticket in item.Tickets)
+                                    {
+                                        <tr>
+                                            <td>@ticket.TicketID</td>
+                                            <td>@ticket.Username</td>
+                                            <td>@ticket.MovieTitle</td>
+                                            <td>@ticket.SeatNumber</td>
+                                            <td>@ticket.Price.ToString("N0") VNĐ</td>
+                                            <td>@(ticket.PaymentMethod == "PayAtTheCounter" || ticket.PaymentMethod == "Thanh Toán Tại Quầy" ? "Thanh Toán Tại Quầy" : "Chuyển Khoản")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Biểu đồ doanh thu -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Dữ liệu cho biểu đồ từ Razor
+    var labels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(labels));
+    var revenues = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(revenues));
+
+    // Khởi tạo biểu đồ
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    const revenueChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels, // Các ngày
+            datasets: [{
+                label: 'Doanh thu (VNĐ)',
+                data: revenues, // Tổng doanh thu theo ngày
+                backgroundColor: 'rgba(255, 239, 102, 0.6)',
+                borderColor: 'rgba(255, 239, 102, 1)',  
+       
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString() + ' VNĐ'; // Định dạng VNĐ
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false // Ẩn chú thích
+                }
+            }
+        }
+    });
+
+    // Hiển thị chi tiết vé
+    function showTickets(date) {
+        var safeDate = date.replace(/\//g, "_");
+        var ticketsRow = document.getElementById('tickets-' + safeDate);
+
+        if (ticketsRow) {
+            ticketsRow.style.display = ticketsRow.style.display === 'none' ? 'table-row' : 'none';
+        } else {
+            console.log('Không tìm thấy phần tử với ID: tickets-' + safeDate);
+        }
+    }
+</script>

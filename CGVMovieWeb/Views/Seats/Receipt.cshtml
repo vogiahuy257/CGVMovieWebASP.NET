@@ -1,0 +1,43 @@
+﻿@model CGVMovieWeb.Models.ReceiptViewModel
+@{
+    ViewBag.Title = "Biên Lai Đặt Vé";
+    ViewBag.movieOpen = "active";   
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-4" style="">
+    <div class="p-4 ">
+        <div class="text-center mb-4">
+            <h2 class="mb-0">Biên Lai Đặt Vé</h2>
+        </div>
+        <h5 class="mb-3">Thông Tin Phim</h5>
+        <div class="mb-2">
+            <strong>Tên Phim:</strong>
+            <span class="fw-bold">@Model.MovieTitle</span>
+        </div>
+        <div class="mb-2">
+            <strong>Giá Vé:</strong>
+            <span class="fw-bold">@Model.TicketPrice.ToString("N0") VND</span>
+        </div>
+        <div class="mb-2 d-flex">
+            <strong>Số Ghế Đã Chọn:</strong>
+            <div class="d-flex flex-wrap">
+                @foreach (var seat in Model.SelectedSeats)
+                {
+                    <span class="badge bg-success me-2 mb-2">@seat</span>
+                }
+            </div>
+        </div>
+        <div class="mb-2">
+            <strong>Ngày Mua:</strong>
+            <span class="fw-bold">@Model.PurchaseDate.ToString("dd/MM/yyyy HH:mm")</span>
+        </div>
+        <div class="mb-2">
+            <strong>Phương thức thanh toán:</strong>
+            <span class="fw-bold">@(Model.PaymentMethod == "PayAtTheCounter" || Model.PaymentMethod == "Thanh Toán Tại Quầy" ? "Thanh Toán Tại Quầy" : "Chuyển Khoản") - @(Model.PaymentConfirmation ?  "Đã Thanh toán" : "chưa thanh toán")</span>
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <a href="@Url.Action("Back", "Home")" class="btn btn-primary">Quay Về Trang Chủ</a>
+    </div>
+</div>

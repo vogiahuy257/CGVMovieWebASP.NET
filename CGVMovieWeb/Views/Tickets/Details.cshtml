@@ -1,0 +1,66 @@
+﻿@model CGVMovieWeb.Models.Ticket
+
+@{
+    ViewBag.Title = "Details";
+    ViewBag.movieOpen = "active";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container h-full d-flex flex-column" style="width:100%;">
+    <h4 class="m-auto">Chi tiết vé của bạn</h4>
+
+    <div class="d-flex justify-content-center p-2 w-100 h-100" style="gap: 16px;">
+        <!-- Hình ảnh và tên phim -->
+        <div class="d-flex flex-column" style="flex: 1; max-width: 30%; min-width: 300px;">
+            <div class="card" style="flex-grow: 1; height: 510px; position: relative;">
+                <!-- Chiều cao cố định -->
+                <img src="~/images/@Url.Content(Model.Showtime.Movy.ImageLink)"
+                     class="card-img-top"
+                     alt="@Model.Showtime.Movy.Title"
+                     style="border-radius:0.5rem; width: 100%; height: 100%; object-fit: cover;"> <!-- Đặt cố định kích thước -->
+                <div style="position:absolute; bottom:0px; left:0px; background-color: #000000af; width:100%; height:50px; display:flex; color:#ffffff; border-bottom-left-radius:0.5rem; border-bottom-right-radius:0.5rem;">
+                    <h5 class="m-auto">@Model.Showtime.Movy.Title</h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chi tiết vé -->
+        <div class="d-flex flex-column h-100" style="flex: 2; min-width: 300px;">
+            <dl class="row">
+                <dt class="col-sm-4">Ngày bắt đầu:</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.PurchaseDate)</dd>
+
+                <dt class="col-sm-4">Giá:</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Price) VND</dd>
+
+                <dt class="col-sm-4">Tên phòng:</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Showtime.Room)</dd>
+
+                <dt class="col-sm-4">Số ghế:</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Seat.SeatNumber)</dd>
+
+                <dt class="col-sm-4">Phương thức thanh toán:</dt>
+                <dd class="col-sm-8">@(Model.PaymentMethod == "PayAtTheCounter" || Model.PaymentMethod == "Thanh Toán Tại Quầy" ? "Thanh Toán Tại Quầy" : "Chuyển Khoản")</dd>
+
+                <dt class="col-sm-4">Trạng thái thanh toán:</dt>
+                <dd class="col-sm-8">
+                    @if (Model.PaymentConfirmation.HasValue && Model.PaymentConfirmation.Value)
+                    {
+                        <span class="text-success">Đã thanh toán</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Chưa thanh toán</span>
+                    }
+                </dd>
+
+
+            </dl>
+
+            <div class="mt-auto" style="">
+                <a href="@Url.Action("Back", "Home")" class="btn" style="background-color: #222222; color: light-dark(#ffffff,#222222);">Quay lại trang chủ</a>
+            </div>
+        </div>
+    </div>
+</div>
+

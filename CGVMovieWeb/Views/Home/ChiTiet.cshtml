@@ -1,0 +1,103 @@
+﻿@model CGVMovieWeb.Models.Movy
+
+@{
+    ViewBag.Title = "ChiTiet";
+    ViewBag.movieOpen = "active";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-4 d-flex justify-content-center">
+
+    
+    <div class="row w-75 hidden-scrollbar p-2" style="position: relative; overflow-y: auto; max-height:580px;">
+        <a href="@Url.Action("Back", "Home")" class="btn-back m-0 mt-3">
+            <svg xmlns="http://www.w3.org/2000/svg" height="12px" viewBox="0 -960 960 960" width="12px" fill="currentColor">
+                <path d="M384-96 0-480l384-384 68 68-316 316 316 316-68 68Z" />
+            </svg>
+            quay lại
+        </a>
+
+        <div class="col-md-8 p-4 d-flex flex-column justify-content-end shadow-sm" style="background-color: light-dark(#fff, var(--color-yellow)); border-radius: 0.75rem; ">
+            <h2 class="mt-4">@Model.Title</h2>
+            <!-- Genre with icon -->
+            <p><i class="bi bi-film"></i> <strong>Thể loại:</strong> @Model.Genre</p>
+
+            <!-- Duration with icon -->
+            <p><i class="bi bi-clock"></i> <strong>Thời lượng:</strong> @Model.Duration phút</p>
+
+            <!-- Release Date with icon -->
+            <p><i class="bi bi-calendar"></i> <strong>Ngày phát hành:</strong> @Model.ReleaseDate</p>
+
+            <!-- Rating with icon -->
+            <p><i class="bi bi-star-fill"></i> <strong>Đánh giá:</strong> @(Model.Rating != null ? $"{Model.Rating} / 10" : "Chưa có đánh giá")</p>
+
+            <!-- Ticket Price with icon -->
+            <p><i class="bi bi-currency-dollar"></i> <strong>Giá vé:</strong> @Model.TicketPrice VND</p>
+
+            <!-- Description with icon -->
+            <p><i class="bi bi-pencil-square"></i> <strong>Mô tả:</strong> @Model.Description</p>
+
+            <a href="@Url.Action("DatVe", "Showtimes", new { movieId = Model.MovieID })" class="btn btn-datve" style="margin:auto; background-color: light-dark(#222222,var(--color-yellow)); color: light-dark(var(--color-yellow), #222222);"><i class="bi bi-ticket-perforated-fill"></i> Đặt Vé</a>
+        </div>
+        <div class="col-md-4">
+            <img src="~/images/@Model.ImageLink" alt="@Model.Title" class="img-fluid shadow" style="object-fit: cover; width:100%; height:100%; border-radius: 0.75rem;">
+        </div>
+
+        <!-- Hiển thị trailer -->
+        <div class="col-12 mt-4 mb-4">
+            <h3 class="text-center">Trailer</h3>
+            <div class="ratio ratio-16x9 shadow">
+                @if (!string.IsNullOrEmpty(Model.LinkTrailer))
+                {
+                    <iframe src="@Model.LinkTrailer"
+                            frameborder="0"
+                            allowfullscreen
+                            class="rounded"
+                            style="width: 100%; height: 100%; border-radius: 0.75rem;"></iframe>
+                }
+                else
+                {
+                    <p class="text-center text-muted">Trailer chưa được cập nhật.</p>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    a.btn-datve:hover {
+        background-color: #ff0000 !important;
+    }
+    a.btn-datve:active
+    {
+        background-color: #ffffff;
+        color:#ff0000;
+    }
+
+    .btn-back {
+        position:absolute;
+        top:6px;
+        left:0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: light-dark(#222222,var(--color-yellow));
+        color: light-dark(var(--color-yellow),#222222);
+        width:auto;
+        padding:4px 10px;
+        border-radius:0.75rem;
+    }
+
+        .btn-back svg {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight:700;
+        }
+
+        .btn-back:hover {
+            background-color: red;
+        } 
+</style>

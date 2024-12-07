@@ -1,0 +1,48 @@
+﻿@model CGVMovieWeb.Models.Ticket
+@{
+    ViewBag.Title = "Edit";
+    ViewBag.movieOpen = "active";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit Ticket</h2>
+
+@using (Html.BeginForm("Edit", "Tickets", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.TicketID)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserID, "User")
+        @Html.DropDownListFor(model => model.UserID, (SelectList)ViewBag.UserID, "Select User", new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.UserID)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ShowtimeID, "Showtime")
+        @Html.DropDownListFor(model => model.ShowtimeID, (SelectList)ViewBag.ShowtimeID, "Select Showtime", new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.ShowtimeID)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.SeatID, "Seat")
+        @Html.DropDownListFor(model => model.SeatID, (SelectList)ViewBag.SeatID, "Select Seat", new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.SeatID)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.PurchaseDate, "Purchase Date")
+        @Html.TextBoxFor(model => model.PurchaseDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+        @Html.ValidationMessageFor(model => model.PurchaseDate)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Price, "Price")
+        @Html.TextBoxFor(model => model.Price, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Price)
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="@Url.Action("Details", "Tickets", new { id = Model.TicketID })" class="btn btn-secondary">Cancel</a>
+}

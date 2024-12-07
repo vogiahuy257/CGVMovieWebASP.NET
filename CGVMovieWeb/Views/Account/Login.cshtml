@@ -1,0 +1,108 @@
+﻿@model CGVMovieWeb.Models.LoginViewModel
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/Login.cshtml";
+}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="custom-main card shadow">
+                <div class="card-body">
+                    <h3 class="text-center mb-2">Đăng Nhập</h3>
+                    <form id="loginForm" method="post" action="@Url.Action("Login", "Account")">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-2">
+                            <label for="loginUsername" class="form-label">Tên đăng nhập</label>
+                            <input type="text" class="form-control" id="loginUsername" name="Username" required placeholder="Nhập tên đăng nhập">
+                            <p class="invalid-feedback">Vui lòng nhập tên đăng nhập.</p>
+                        </div>
+                        <div class="mb-2 position-relative">
+                            <label for="loginPassword" class="form-label">Mật khẩu</label>
+                            <div class="input-group position-relative">
+                                <input type="password" class="rounded input-password form-control" id="loginPassword" name="Password" required placeholder="Nhập mật khẩu của bạn">
+                                <p class="invalid-feedback">Mật khẩu không được để trống.</p>
+                                <button class="btn btn-outline-secondary" style="position: absolute; right: 0; z-index: 50;" type="button" id="togglePassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        @*<div class="form-check mb-2">
+                            <input type="checkbox" class="form-check-input" id="rememberMe" name="RememberMe">
+                            <label class="form-check-label" for="rememberMe">Nhớ tài khoản</label>
+                        </div>*@
+                        <button type="submit" class="btn btn-submit w-100 mt-2">Đăng Nhập</button>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <small>Bạn chưa có tài khoản? <a href="/Account/Register" class="text-decoration-none">Đăng ký ngay</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+     document.addEventListener('DOMContentLoaded', function () {
+         const usernameField = document.getElementById('loginUsername');
+         const passwordField = document.getElementById('loginPassword');
+
+         // Kiểm tra khi người dùng rời khỏi trường nhập liệu
+         usernameField.addEventListener('blur', function () {
+             if (!usernameField.value.trim()) {
+                 showValidationError(usernameField, 'Vui lòng nhập tên đăng nhập.');
+             } else {
+                 resetValidation(usernameField);
+             }
+         });
+
+         passwordField.addEventListener('blur', function () {
+             if (!passwordField.value.trim()) {
+                 showValidationError(passwordField, 'Vui lòng nhập mật khẩu.');
+             } else {
+                 resetValidation(passwordField);
+             }
+         });
+     });
+     document.getElementById('loginForm').addEventListener('submit', function (e) {
+         e.preventDefault(); // Ngăn chặn gửi form mặc định
+
+         const usernameField = document.getElementById('loginUsername');
+         const passwordField = document.getElementById('loginPassword');
+         let isValid = true;
+
+         // Reset trạng thái lỗi
+         resetValidation(usernameField);
+         resetValidation(passwordField);
+
+         // Kiểm tra tên đăng nhập
+         if (!usernameField.value.trim()) {
+             showValidationError(usernameField, 'Vui lòng nhập tên đăng nhập.');
+             isValid = false;
+         }
+
+         // Kiểm tra mật khẩu
+         if (!passwordField.value.trim()) {
+             showValidationError(passwordField, 'Vui lòng nhập mật khẩu.');
+             isValid = false;
+         }
+
+         // Nếu hợp lệ, submit form
+         if (isValid) {
+             this.submit();
+         }
+     });
+
+     function showValidationError(input, message) {
+         const feedback = input.nextElementSibling;
+         input.classList.add('is-invalid');
+         feedback.textContent = message;
+         feedback.style.display = 'block';
+     }
+
+     function resetValidation(input) {
+         const feedback = input.nextElementSibling;
+         input.classList.remove('is-invalid');
+         feedback.textContent = '';
+         feedback.style.display = 'none';
+     }
+</script>

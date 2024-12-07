@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+
+    <link rel="icon" href="~/images/CGV_logo.svg.png" type="image/x-icon">
+    <link rel="shortcut icon" href="~/images/CGV_logo.svg.png" type="image/x-icon">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/Site.css">
+</head>
+<body>
+
+    <div id="home" class="banner">
+        <div class="content">
+            <nav class="menu-top">
+                <div class="logo">
+                    <img src="~/images/CGV_logo.svg.png" alt="">
+                </div>
+                <!-- Nút Đăng nhập và Đăng ký -->
+                @if (Session["Username"] != null)
+                {
+
+
+                    <div class="nav-left" style="margin-left: auto; padding: 10px; margin-right: 8px; position: relative;">
+
+                        <button id="btn-ticker" class="btn-ticker">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                                <path d="m480-404 60 46q11 9 24 .5t8-22.5l-24-76 67-52q11-9 6-22.5T602-544h-78l-25-77q-5-14-19-14t-19 14l-25 77h-79q-14 0-18.5 13.5T345-508l65 52-24 77q-5 14 7 22.5t24-.5l63-47ZM160-160q-33 0-56.5-23.5T80-240v-135q0-11 7-19t18-10q24-8 39.5-29t15.5-47q0-26-15.5-47T105-556q-11-2-18-10t-7-19v-135q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v135q0 11-7 19t-18 10q-24 8-39.5 29T800-480q0 26 15.5 47t39.5 29q11 2 18 10t7 19v135q0 33-23.5 56.5T800-160H160Zm0-80h640v-102q-37-22-58.5-58.5T720-480q0-43 21.5-79.5T800-618v-102H160v102q37 22 58.5 58.5T240-480q0 43-21.5 79.5T160-342v102Zm320-240Z" />
+                            </svg>
+                            <span id="ticketCount">
+                                @(Session["Tickets"] != null && ((List<CGVMovieWeb.Models.Ticket>)Session["Tickets"]).Count > 0
+                                ? ((List<CGVMovieWeb.Models.Ticket>)Session["Tickets"]).Count.ToString()
+                                : "0")
+                            </span>
+                        </button>
+
+
+                        <div id="ticker-model">
+                            <ul class="ticker-model hidden-scrollbar" aria-labelledby="ticketCartDropdown" style="padding-left: 0px; list-style: none; max-height: 400px; overflow-y: auto; width: auto; height: auto; margin: 4px">
+                                @if (Session["Tickets"] != null && ((List<CGVMovieWeb.Models.Ticket>)Session["Tickets"]).Count > 0)
+                                {
+                                    var tickets = (List<CGVMovieWeb.Models.Ticket>)Session["Tickets"];
+                                    foreach (var ticket in tickets)
+                                    {
+                                        <li>
+                                            <div class="ticker-logo">
+                                                @*<h1 class="d-flex justify-content-center align-items-center"  style="writing-mode: vertical-lr; transform: rotate(180deg);">Vé</h1>*@
+                                                <svg></svg>
+                                            </div>
+                                            <a class="ticker-box d-flex justify-content-center flex-column" style="height: 116px;" href="@Url.Action("Details", "Tickets", new { id = ticket.TicketID })">
+                                                <div class="d-flex flex-column justify-content-center" style=" width: 260px; height: 100%; margin-left: 8px;">
+                                                    <strong style="white-space: nowrap; text-overflow: ellipsis;">
+                                                        @ticket.Showtime.Movy.Title
+                                                    </strong>
+                                                    <small style="white-space: nowrap; text-overflow: ellipsis; font-size:14px;">
+                                                        Mã Vé: @ticket.TicketID
+                                                    </small>
+                                                    <small style="white-space: nowrap; text-overflow: ellipsis;">
+                                                        Ghế: @ticket.Seat.SeatNumber
+                                                    </small>
+                                                    <small style="white-space: nowrap; text-overflow: ellipsis;">
+                                                        Thời Gian:@ticket.PurchaseDate
+                                                    </small>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li class="">
+                                        Giỏ vé của bạn trống!
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="nav-left" style="margin-left: 0px; padding: 10px;">
+                        <div class="box-user">
+                            <span class="user-title">Xin chào, <i>@Session["Username"]</i>!</span>
+                            <a href="/Account/LogOut" class="btn-logout" style="background-color: var(--color-yellow); color: #222222;">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                                    <path d="M806-440H360q-17 0-28.5-11.5T320-480q0-17 11.5-28.5T360-520h446l-34-34q-12-12-11.5-28t11.5-28q12-12 28.5-12.5T829-611l103 103q12 12 12 28t-12 28L829-349q-12 12-28.5 11.5T772-350q-11-12-11.5-28t11.5-28l34-34ZM600-640v-120H200v560h400v-120q0-17 11.5-28.5T640-360q17 0 28.5 11.5T680-320v120q0 33-23.5 56.5T600-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h400q33 0 56.5 23.5T680-760v120q0 17-11.5 28.5T640-600q-17 0-28.5-11.5T600-640Z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="nav-left">
+                        <a href="/Account/Login" class="btn-nav btn-login">Login</a>
+                        <a href="/Account/Register" class="btn-nav btn-register">Register</a>
+                    </div>
+                }
+            </nav>
+
+            <nav class="menu-right">
+                <button id="btn-information" class="btn-information">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                        <path d="M480-107q-14 0-28-5t-25-15q-65-60-115-117t-83.5-110.5q-33.5-53.5-51-103T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 45-17.5 94.5t-51 103Q698-301 648-244T533-127q-11 10-25 15t-28 5Zm0-213q17 0 29.5-12.5T522-362q0-17-12.5-29.5T480-404q-17 0-29.5 12.5T438-362q0 17 12.5 29.5T480-320Zm1-124q12 0 20.5-8.5T510-473q0-8 4-17.5t11-17.5q5-5 12-11.5t15-14.5q21-21 31.5-42t10.5-42q0-45-34-73.5T480-720q-34 0-63.5 17.5T373-654q-5 11-1 22.5t15 16.5q11 5 22.5 1t16.5-15q8-15 22.5-24t31.5-9q21 0 37.5 13t16.5 33q0 17-8 30t-31 32q-10 8-17 15t-12 15q-7 11-11 22t-4 21q0 14 8 25.5t22 11.5Zm-1 258q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0-374Z" />
+                    </svg>
+                </button>
+            </nav>
+
+            <div class="movie-main @ViewBag.movieOpen">
+                <div class="btn-open-movie">
+                    <button id="rotateButton-move">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
+                            <path d="M480-92q-10 0-20-2.5t-19-7.5L161-257q-19-11-30-29.5T120-327v-306q0-22 11-40.5t30-29.5l280-155q9-5 19-7.5t20-2.5q10 0 20 2.5t19 7.5l280 155q19 11 30 29.5t11 40.5v306q0 22-11 40.5T799-257L519-102q-9 5-19 7.5T480-92ZM364-590q22-23 51.5-36.5T480-640q35 0 64.5 13.5T596-590l120-67-236-131-236 131 120 67Zm76 396v-131q-52-14-86-56.5T320-480q0-11 1-21t4-19l-125-70v263l240 133Zm40-206q33 0 56.5-23.5T560-480q0-33-23.5-56.5T480-560q-33 0-56.5 23.5T400-480q0 33 23.5 56.5T480-400Zm40 206 240-133v-263l-125 70q3 10 4 19.5t1 20.5q0 56-34 98.5T520-325v131Z" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="movie-list">
+                    <div class="movie-box">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+
+            <div id="mode-information">
+                <div class="box-information">
+                    <!-- Thông tin Rạp -->
+                    <div class="information-header">
+                        <div class="information-title">
+                            <h4>Thông tin rạp</h4>
+                            <p><strong>Địa chỉ:</strong> Tầng 4, TTTM Becamex, 230 Đại lộ Bình Dương, TP. Thủ Dầu Một, Bình Dương</p>
+                            <p><strong>Số điện thoại:</strong> 1900 6017</p>
+                            <p><strong>Giờ mở cửa:</strong> 8:00 AM - 10:00 PM</p>
+                            <p><strong>Mô tả:</strong> Rạp CGV Bình Dương Square mang đến không gian hiện đại với nhiều phòng chiếu tiêu chuẩn quốc tế, phù hợp với mọi đối tượng khách hàng.</p>
+                        </div>
+                        <div class="information-img">
+                            <!-- Hình ảnh đại diện -->
+                            <img src="~/images/RapCGV.jpg" alt="Rạp CGV Bình Dương Square" class="img-fluid rounded">
+                        </div>
+                    </div>
+
+                    <!-- Bản đồ Google Maps -->
+                    <div class="map">
+                        <h4>Bản đồ</h4>
+                        <div style="width: 100%; overflow: hidden; border-radius: 0.5rem; border: 1.5px solid #000;">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.7856362354864!2d106.66523115061493!3d10.984540150158223!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3174d12309d6b91b%3A0x28902a0075f0afa2!2sCGV%20B%C3%ACnh%20D%C6%B0%C6%A1ng%20Square!5e0!3m2!1sen!2s!4v1697876543210!5m2!1sen!2s"
+                                    width="100%"
+                                    height="220"
+                                    style="border:0; display: block;"
+                                    allowfullscreen=""
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.getElementById("rotateButton-move").addEventListener("click", function () {
+            // Toggle class 'active' cho phần tử movie-main
+            const movieInformationMain = document.getElementById("mode-information");
+            movieInformationMain?.classList.contains("active") && movieInformationMain.classList.remove("active");
+            document.getElementById("btn-information")?.classList.contains("change") && document.getElementById("btn-information").classList.remove("change");
+
+            const tickerModel = document.getElementById("ticker-model");
+            tickerModel?.classList.contains("active") && tickerModel.classList.remove("active");
+            document.getElementById("btn-ticker")?.classList.contains("change") && document.getElementById("btn-ticker").classList.remove("change");
+
+            this.classList.toggle("rotate");
+            const movieMain = document.querySelector(".movie-main");
+            movieMain?.classList.toggle("active");
+        });
+
+        document.getElementById("btn-information").addEventListener("click", function () {
+            // Toggle class 'active' cho phần tử mode-information
+            const movieMain = document.querySelector(".movie-main");
+            movieMain?.classList.contains("active") && movieMain.classList.remove("active");
+
+            const tickerModel = document.getElementById("ticker-model");
+            tickerModel?.classList.contains("active") && tickerModel.classList.remove("active");
+            document.getElementById("btn-ticker")?.classList.contains("change") && document.getElementById("btn-ticker").classList.remove("change");
+
+            this.classList.toggle("change");
+            const movieInformationMain = document.getElementById("mode-information");
+            movieInformationMain?.classList.toggle("active");
+        });
+
+        document.getElementById("btn-ticker").addEventListener("click", function () {
+            // Toggle class 'active' cho phần tử ticker-model
+            const movieMain = document.querySelector(".movie-main");
+            movieMain?.classList.contains("active") && movieMain.classList.remove("active");
+
+            const movieInformationMain = document.getElementById("mode-information");
+            movieInformationMain?.classList.contains("active") && movieInformationMain.classList.remove("active");
+            document.getElementById("btn-information")?.classList.contains("change") && document.getElementById("btn-information").classList.remove("change");
+
+            this.classList.toggle("change");
+            const tickerModel = document.getElementById("ticker-model");
+            tickerModel?.classList.toggle("active");
+        });
+
+    </script>
+
+</body>
+</html>

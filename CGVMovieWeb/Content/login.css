@@ -1,0 +1,152 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    color-scheme: light dark;
+    --color-yellow: #fdfcf0;
+}
+
+/* Ẩn quảng cáo dạng center */
+center > a[href="http://somee.com/"] {
+    display: none !important;
+}
+
+/* Ẩn div chứa quảng cáo */
+div[style*="z-index: 2147483647"],
+script[src*="WholeInsert5.js"] {
+    display: none !important;
+}
+
+link[rel="icon"] {
+    object-fit: contain; /* Giữ tỉ lệ */
+    width: 32px; /* Kích thước favicon */
+    height: 32px;
+}
+.hidden-scrollbar {
+    overflow: auto; /* Bật cuộn nếu nội dung vượt quá kích thước */
+    scrollbar-width: none; /* Firefox */
+}
+
+    .hidden-scrollbar::-webkit-scrollbar {
+        display: none; /* Chrome, Safari và Edge */
+    }
+
+body {
+    font-family: "Inter", serif;
+    overflow-x: hidden;
+    background-color: var(--color-yellow);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#login-page .logo {
+    background-color: #222;
+    border-radius: 100%;
+    height: 280px;
+    width: 110%;
+    position: relative;
+    transform: translateY(-57%);
+    box-shadow: inset 0px 0px 58px #000000;
+    animation: animationIsOpenLogo 1.2s ease-in-out;
+}
+
+    #login-page .logo svg {
+        background-image: url(/images/CGV_logo.svg.png);
+        background-repeat: no-repeat;
+        background-position: center;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+@keyframes animationIsOpenLogo {
+    0% {
+        transform: translateY(-107%);
+    }
+
+    100% {
+        transform: translateY(-57%);
+    }
+}
+
+@keyframes animationIsOpenForm {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+#login-page .container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    animation: animationIsOpenForm .8s ease-in-out;
+}
+
+#login-page .btn {
+    background-color: #222;
+    color: var(--color-yellow);
+}
+
+    #login-page .btn:hover {
+        background-color: #333;
+    }
+
+    #login-page .btn:active {
+        color: #ff0000;
+        background-color: var(--color-yellow);
+    }
+
+/* Trạng thái bình thường */
+input.form-control {
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+    /* Trạng thái focus */
+    input.form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    /* Trạng thái lỗi */
+    input.form-control.is-invalid {
+        border-color: #dc3545; /* Đỏ */
+        background-color: #fff5f5;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+
+/* Thông báo lỗi */
+.invalid-feedback {
+    display: none;
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Trạng thái hover và focus cho nút */
+#login-page .btn {
+    background-color: #222;
+    color: var(--color-yellow);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    #login-page .btn:hover {
+        background-color: #333;
+    }
+
+    #login-page .btn:active {
+        color: #ff0000;
+        background-color: var(--color-yellow);
+    }

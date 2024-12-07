@@ -1,0 +1,227 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="icon" href="~/images/CGV_logo.svg.png" type="image/x-icon">
+    <link rel="shortcut icon" href="~/images/CGV_logo.svg.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary-dark: #222222;
+            --primary-light: #fcfcfc;
+            --primary-gray: #252525;
+            --sidebar-width: 200px;
+            --color-yellow: #fdfcf0;
+            --color-red: #ff0000;
+        }
+
+        /* Ẩn quảng cáo dạng center */
+        center > a[href="http://somee.com/"] {
+            display: none !important;
+        }
+
+        /* Ẩn div chứa quảng cáo */
+        div[style*="z-index: 2147483647"],
+        script[src*="WholeInsert5.js"] {
+            display: none !important;
+        }
+
+        /* Body styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--primary-light);
+        }
+          /* Sidebar */
+        #sidebar {
+            width: var(--sidebar-width);
+            height: calc(100vh - 56px); /* Chiều cao trừ đi chiều cao header */
+            background-color: var(--primary-gray);
+            position: fixed;
+            top: 56px; /* Đảm bảo menu bắt đầu bên dưới header */
+            left: 0;
+            overflow-y: auto;
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000; /* Giữ menu phía trên các phần khác */
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+            #sidebar.closed {
+                transform: translateX(-100%);
+            }
+
+            #sidebar ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            #sidebar .nav-link {
+                color: #adb5bd; /* Màu chữ xám nhạt */
+                font-size: 1rem;
+                margin: 0.5rem;
+                padding: 0.75rem 1rem;
+                display: flex;
+                align-items: center;
+                transition: all 0.3s ease-in-out;
+                text-decoration: none; /* Loại bỏ gạch chân */
+                border-radius: 12px;
+            }
+
+                #sidebar .nav-link i {
+                    font-size: 1.2rem;
+                    margin-right: 10px;
+                }
+
+                #sidebar .nav-link:hover,
+                #sidebar .nav-link.active {
+                    background-color: #343a40; /* Màu nền khi hover */
+                    color: #ffffff; /* Màu chữ trắng khi hover */
+                    border-radius: 0.5rem; /* Góc bo tròn */
+                    box-shadow: inset 2px 0 5px rgba(255, 255, 255, 0.2);
+                }
+
+    /* Header */
+    .header {
+        position: fixed; /* Giữ header ở trên cùng */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 56px;
+        z-index: 1100; /* Đảm bảo header luôn ở trên cùng */
+        background-color: var(--primary-dark);
+    }
+
+    /* Main content */
+    main {
+        margin-left: var(--sidebar-width);
+        padding: 2rem;
+        background-color: var(--primary-light);
+        transition: margin-left 0.3s ease-in-out;
+    }
+
+    main.expanded {
+        margin-left: 0;
+    }
+        .container {
+            max-width: 800px;
+        }
+
+        .form-control {
+            border-radius: 12px;
+        }
+
+        .btn {
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #0056b3;
+            }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+                border-color: #5a6268;
+            }
+
+        .form-label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-control, .btn {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .mb-3 .form-control {
+            background-color: #f9f9f9;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header d-flex align-items-center">
+        <button id="toggleSidebar" class="btn btn-secondary" style="margin-left:12px; background-color: var(--primary-gray)">
+            <i class="bi bi-list"></i>
+        </button>
+        <a class="navbar-brand text-white" style="margin-left:8px;" href="/Admin/MoviesList">Admin Dashboard</a>
+        <div class="dropdown" style="margin-left: auto; margin-right: 12px;">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="adminMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle"></i> @Session["Username"]
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminMenu">
+                <li><a class="dropdown-item" href="@Url.Action("Logout", "Account")">Đăng xuất</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div id="sidebar">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "MoviesList" ? "active" : "")" href="@Url.Action("MoviesList", "Admin")">
+                    <i class="bi bi-film"></i> Quản lý Phim
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "ShowtimesList" ? "active" : "")" href="@Url.Action("ShowtimesList", "Admin")">
+                    <i class="bi bi-calendar-event"></i> Lịch Chiếu
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "RevenueStatistics" ? "active" : "")" href="@Url.Action("RevenueStatistics", "Admin")">
+                    <i class="bi bi-graph-up"></i> Doanh Thu
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "TicketsList" ? "active" : "")" href="@Url.Action("TicketsList", "Admin")">
+                    <i class="bi bi-ticket-perforated"></i> Vé Đã Đặt
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main content -->
+    <main>
+        <div class="container-fluid my-5">
+            @RenderBody()
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const toggleSidebarButton = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.querySelector('main');
+
+        toggleSidebarButton.addEventListener('click', () => {
+            sidebar.classList.toggle('closed');
+            mainContent.classList.toggle('expanded');
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

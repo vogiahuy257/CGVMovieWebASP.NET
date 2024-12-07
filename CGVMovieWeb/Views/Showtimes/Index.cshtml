@@ -1,0 +1,59 @@
+﻿@model IEnumerable<CGVMovieWeb.Models.Showtime>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ShowDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Room)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movy.Title)
+            </th>
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShowDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Room)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Movy.Title)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.ShowtimeID }) |
+                @Html.ActionLink("Details", "Details", new { id=item.ShowtimeID }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.ShowtimeID })
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

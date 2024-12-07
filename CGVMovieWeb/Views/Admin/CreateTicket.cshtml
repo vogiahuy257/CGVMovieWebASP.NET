@@ -1,0 +1,266 @@
+﻿@model CGVMovieWeb.Models.CreateTicketViewModel
+
+@{
+    ViewBag.Title = "Create Ticket";
+    Layout = "~/Views/Shared/LayoutAdmin.cshtml";
+}
+<a href="/Admin/TicketsList" class="btn btn-dark" >
+    Back
+</a>
+@using (Html.BeginForm())
+{
+    <div class="container py-5">
+        <h2 class="text-center mb-4">Tạo Vé Xem Phim</h2>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <!-- Chọn Phim -->
+                <div class="mb-4">
+                    <label for="MovieID" class="form-label">Chọn Phim:</label>
+                    <select id="MovieID" name="MovieID" class="form-select" onchange="loadShowtimes()">
+                        <option value="">Chọn Phim</option>
+                        @foreach (var movie in Model.Movies)
+                        {
+                            <option value="@movie.MovieID">
+                                @movie.Title - @(movie.TicketPrice.HasValue ? movie.TicketPrice.Value.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) : "Chưa có giá") VNĐ
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Chọn Suất Chiếu -->
+                <div class="mb-4">
+                    <label for="ShowtimeID" class="form-label">Chọn Suất Chiếu:</label>
+                    <select id="ShowtimeID" name="ShowtimeID" class="form-select">
+                        <option value="">Chọn Suất Chiếu</option>
+                    </select>
+                </div>
+
+                <!-- Chọn Ghế -->
+                <div class="mb-4">
+                    <label for="SeatID" class="form-label">Chọn Ghế:</label>
+                    <div id="seats-container" class="d-flex flex-wrap">
+                        <!-- Các ghế sẽ được hiển thị ở đây -->
+                    </div>
+                </div>
+
+                <!-- Nút Tạo Vé -->
+                <button type="button" class="btn btn-primary w-100" id="btnCreateTicket">Tạo Vé</button>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Modal xác nhận -->
+<div class="modal fade mt-5" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Xác Nhận Đặt Vé</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Phim:</strong> <span id="movieName"></span></p>
+                <p><strong>Suất Chiếu:</strong> <span id="showtimeDetails"></span></p>
+                <p><strong>Ghế Đã Chọn:</strong> <span id="seatsDetails"></span></p>
+                <p><strong>Giá Vé:</strong> <span id="ticketPrice"></span> VNĐ</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <!-- Form để gửi dữ liệu đến controller -->
+                @using (Html.BeginForm("DatVe", "Seats", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="hiddenShowtimeID" name="showtimeId" />
+                    <input type="hidden" id="hiddenTicketPrice" name="ticketPrice" />
+                    <input type="hidden" id="hiddenSelectedSeats" name="selectedSeats" />
+                    <input type="hidden" id="hiddenPaymentConfirmation" name="PaymentConfirmation" value="true" /> <!-- Thêm giá trị PaymentConfirmation -->
+                    <input type="hidden" id="hiddenPaymentMethod" name="PaymentMethod" value="PayAtTheCounter" />
+                    <button type="submit" class="btn btn-primary">Xác Nhận Đặt Vé</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .seat {
+        width: 40px;
+        height: 40px;
+        margin: 5px;
+        display: inline-block;
+        background-color: #ddd;
+        text-align: center;
+        line-height: 40px;
+        cursor: pointer;
+        border-radius: 50%;
+        background-color: green; /* Ghế còn trống sẽ có màu xanh */
+        transition: background-color 0.3s ease;
+    }
+
+        .seat.selected {
+            background-color: red; /* Ghế đã chọn sẽ có màu đỏ */
+        }
+
+        .seat.unavailable {
+            background-color: #ccc; /* Ghế không còn trống sẽ có màu xám */
+            cursor: not-allowed;
+        }
+
+        .seat:hover {
+            transform: scale(1.1);
+        }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script type="text/javascript">
+    var selectedSeats = [];
+    var ticketPrice = 0;
+    var movieTitle = '';
+    var showtimeDetails = '';
+    let Price = 0;
+
+    // Hàm gọi API để lấy danh sách suất chiếu theo phim
+    function loadShowtimes() {
+        var movieId = document.getElementById("MovieID").value;
+
+        if (movieId) {
+            $.ajax({
+                url: '@Url.Action("GetShowtimesByMovie", "Admin")',
+                type: 'GET',
+                data: { movieId: movieId },
+                success: function (data) {
+                    var showtimeSelect = $('#ShowtimeID');
+                    showtimeSelect.empty();
+                    showtimeSelect.append('<option value="">Chọn Suất Chiếu</option>');
+
+                    console.log(data);
+
+
+                    data.forEach(function (showtime) {
+                        var dateString = showtime.ShowDate;
+                        var timestamp = dateString.match(/\/Date\((\d+)\)\//);
+
+                        Price = showtime.TicketPrice;
+
+                        if (timestamp && timestamp[1]) {
+                            var date = new Date(parseInt(timestamp[1]));
+                            var startTime = showtime.StartTime;
+                            var hours = startTime.Hours;
+                            var minutes = startTime.Minutes;
+
+                            date.setHours(hours);
+                            date.setMinutes(minutes);
+
+
+
+                            var formattedDate = date.toLocaleDateString('vi-VN');
+                            var formattedTime = date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+
+                            showtimeSelect.append('<option value="' + showtime.ShowtimeID + '">' + formattedDate + ' ' + formattedTime + ' - ' + showtime.Room + '</option>');
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    // Hàm gọi API để lấy danh sách ghế cho suất chiếu
+    function loadSeats(showtimeID) {
+        $.ajax({
+            url: '@Url.Action("GetSeats", "Admin")',
+            type: 'GET',
+            data: { showtimeID: showtimeID },
+            success: function (seats) {
+                var seatsContainer = $('#seats-container');
+                seatsContainer.empty(); // Xóa các ghế cũ
+
+                seats.forEach(function (seat) {
+                    var seatElement = $('<div></div>')
+                        .addClass('seat')
+                        .text(seat.SeatNumber)
+                        .attr('data-seat-id', seat.SeatID);
+
+                    if (!seat.IsAvailable) {
+                        seatElement.addClass('unavailable');
+                    } else {
+                        seatElement.addClass('available');
+                        seatElement.on('click', function () {
+                            selectSeat(seat.SeatID, seat.SeatNumber, Price, seatElement, seat.IsAvailable);
+                        });
+                    }
+
+                    seatsContainer.append(seatElement);
+                });
+            }
+        });
+    }
+
+    // Hàm để xử lý khi người dùng chọn ghế
+    function selectSeat(seatID, seatNumber, price, seatElement, isAvailable) {
+        // Kiểm tra trạng thái ghế (còn trống hay không)
+        if (!isAvailable) {
+            // Nếu ghế không còn trống, không làm gì
+            return;
+        }
+
+        seatElement.toggleClass('selected'); // Thêm hoặc bỏ lớp 'selected'
+
+        var seatIndex = selectedSeats.findIndex(s => s.SeatID === seatID);
+
+        if (seatIndex > -1) {
+            // Nếu ghế đã được chọn, bỏ chọn ghế
+            selectedSeats.splice(seatIndex, 1);
+            ticketPrice -= price;
+        } else {
+            // Nếu ghế chưa được chọn, thêm ghế vào danh sách
+            selectedSeats.push({ SeatID: seatID, SeatNumber: seatNumber });
+            ticketPrice += price;
+        }
+
+        console.log('Selected seats: ', selectedSeats);
+
+        // Cập nhật modal khi có sự thay đổi
+        $('#seatsDetails').text(selectedSeats.map(seat => seat.SeatNumber).join(', '));
+        $('#ticketPrice').text(ticketPrice);
+    }
+
+    // Lắng nghe sự kiện thay đổi suất chiếu
+    $('#ShowtimeID').on('change', function() {
+        var showtimeID = $(this).val();
+        if (showtimeID) {
+            loadSeats(showtimeID); // Tải danh sách ghế cho suất chiếu
+        }
+    });
+
+    // Hiển thị Modal xác nhận khi bấm nút Tạo Vé
+    $('#btnCreateTicket').on('click', function () {
+        var movieID = $('#MovieID').val();
+        var showtimeID = $('#ShowtimeID').val();
+
+        if (movieID && showtimeID && selectedSeats.length > 0) {
+            movieTitle = $('#MovieID option:selected').text();
+            showtimeDetails = $('#ShowtimeID option:selected').text();
+
+            // Cập nhật thông tin cho modal
+            $('#movieName').text(movieTitle);
+            $('#showtimeDetails').text(showtimeDetails);
+            $('#seatsDetails').text(selectedSeats.map(seat => seat.SeatNumber).join(', '));
+            $('#ticketPrice').text(ticketPrice);
+
+            // Cập nhật các trường ẩn trong form để gửi dữ liệu đến controller
+            $('#hiddenShowtimeID').val(showtimeID);
+            $('#hiddenTicketPrice').val(Price);
+            $('#hiddenSelectedSeats').val(selectedSeats.map(seat => seat.SeatNumber).join(',')); // Chuyển đổi danh sách ghế thành chuỗi
+
+            // Mở modal
+            $('#confirmModal').modal('show');
+        } else {
+            alert("Vui lòng chọn đầy đủ thông tin.");
+        }
+    });
+
+</script>

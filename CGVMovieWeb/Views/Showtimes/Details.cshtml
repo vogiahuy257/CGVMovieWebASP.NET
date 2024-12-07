@@ -1,0 +1,58 @@
+﻿@model CGVMovieWeb.Models.Showtime
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div>
+        <h4>Showtime</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.ShowDate)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ShowDate)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.StartTime)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.StartTime)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Room)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Room)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Movy.Title)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Movy.Title)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.ShowtimeID }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</body>
+</html>

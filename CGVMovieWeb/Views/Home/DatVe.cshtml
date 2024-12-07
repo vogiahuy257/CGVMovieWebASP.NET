@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewBag.Title = "DatVe";
+    ViewBag.movieOpen = "active";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Seating Section -->
+<div class="container my-5">
+    <h2 class="text-center mb-4">Chọn Ghế Ngồi</h2>
+    <div class="text-center">
+        <div class="d-flex justify-content-center flex-wrap">
+            <!-- Ghế ngồi -->
+            <div class="seat available" data-seat="A1">A1</div>
+            <div class="seat occupied" data-seat="A2">A2</div>
+            <div class="seat available" data-seat="A3">A3</div>
+            <div class="seat available" data-seat="A4">A4</div>
+            <div class="seat occupied" data-seat="A5">A5</div>
+            <div class="seat available" data-seat="A6">A6</div>
+            <div class="seat available" data-seat="A7">A7</div>
+            <div class="seat available" data-seat="A8">A8</div>
+            <div class="seat available" data-seat="A9">A9</div>
+            <div class="seat occupied" data-seat="A10">A10</div>
+        </div>
+        <div class="d-flex justify-content-center flex-wrap mt-3">
+            <div class="seat available" data-seat="B1">B1</div>
+            <div class="seat occupied" data-seat="B2">B2</div>
+            <div class="seat available" data-seat="B3">B3</div>
+            <div class="seat available" data-seat="B4">B4</div>
+            <div class="seat available" data-seat="B5">B5</div>
+            <div class="seat occupied" data-seat="B6">B6</div>
+            <div class="seat available" data-seat="B7">B7</div>
+            <div class="seat available" data-seat="B8">B8</div>
+            <div class="seat available" data-seat="B9">B9</div>
+            <div class="seat occupied" data-seat="B10">B10</div>
+        </div>
+        <div class="d-flex justify-content-center flex-wrap mt-3">
+            <div class="seat available" data-seat="C1">C1</div>
+            <div class="seat available" data-seat="C2">C2</div>
+            <div class="seat available" data-seat="C3">C3</div>
+            <div class="seat available" data-seat="C4">C4</div>
+            <div class="seat occupied" data-seat="C5">C5</div>
+            <div class="seat available" data-seat="C6">C6</div>
+            <div class="seat available" data-seat="C7">C7</div>
+            <div class="seat available" data-seat="C8">C8</div>
+            <div class="seat available" data-seat="C9">C9</div>
+            <div class="seat occupied" data-seat="C10">C10</div>
+        </div>
+        <div class="d-flex justify-content-center flex-wrap mt-3">
+            <div class="seat available" data-seat="D1">D1</div>
+            <div class="seat available" data-seat="D2">D2</div>
+            <div class="seat available" data-seat="D3">D3</div>
+            <div class="seat occupied" data-seat="D4">D4</div>
+            <div class="seat available" data-seat="D5">D5</div>
+            <div class="seat occupied" data-seat="D6">D6</div>
+            <div class="seat available" data-seat="D7">D7</div>
+            <div class="seat available" data-seat="D8">D8</div>
+            <div class="seat occupied" data-seat="D9">D9</div>
+            <div class="seat available" data-seat="D10">D10</div>
+        </div>
+        <div class="d-flex justify-content-center flex-wrap mt-3">
+            <div class="seat available" data-seat="E1">E1</div>
+            <div class="seat occupied" data-seat="E2">E2</div>
+            <div class="seat available" data-seat="E3">E3</div>
+            <div class="seat available" data-seat="E4">E4</div>
+            <div class="seat available" data-seat="E5">E5</div>
+            <div class="seat available" data-seat="E6">E6</div>
+            <div class="seat available" data-seat="E7">E7</div>
+            <div class="seat available" data-seat="E8">E8</div>
+            <div class="seat occupied" data-seat="E9">E9</div>
+            <div class="seat available" data-seat="E10">E10</div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <p><strong>Chú Thích:</strong></p>
+        <p><span class="seat available" style="background-color: #28a745;"></span> Ghế Trống</p>
+        <p><span class="seat occupied" style="background-color: #dc3545;"></span> Ghế Đã Đặt</p>
+    </div>
+
+    <div class="text-center mt-5">
+        <!-- Nút xác nhận đặt vé -->
+        <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmationModal" onclick="showSelectedSeats()">Xác Nhận Đặt Vé</a>
+    </div>
+
+    <!-- Modal xác nhận -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Xác nhận đặt vé</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="/image/9.png" class="img-fluid" alt="Poster phim">
+                    <p><strong>Tên phim:</strong> Phim Hài</p>
+                    <p><strong>Giờ chiếu:</strong> 19:00</p>
+                    <p><strong>Số ghế đã chọn:</strong></p>
+                    <!-- Danh sách ghế được chọn sẽ hiển thị tại đây -->
+                    <ul id="selectedSeatsList"></ul>
+                </div>
+                <div class="modal-footer">
+                    <!-- Nút gửi form để xác nhận -->
+                    <button type="submit" class="btn btn-success">Xác nhận</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script xử lý hiển thị ghế đã chọn -->
+    <script>
+        function showSelectedSeats() {
+            // Lấy tất cả các checkbox đã được chọn
+            const selectedSeats = document.querySelectorAll('input[name="seats"]:checked');
+            const selectedSeatsList = document.getElementById('selectedSeatsList');
+
+            // Xóa nội dung cũ trong danh sách ghế đã chọn
+            selectedSeatsList.innerHTML = '';
+
+            // Nếu không có ghế nào được chọn
+            if (selectedSeats.length === 0) {
+                selectedSeatsList.innerHTML = '<li>Không có ghế nào được chọn</li>';
+            } else {
+                // Duyệt qua các checkbox đã chọn và thêm vào danh sách
+                selectedSeats.forEach(seat => {
+                    const li = document.createElement('li');
+                    li.textContent = seat.value;
+                    selectedSeatsList.appendChild(li);
+                });
+            }
+        }
+    </script>
+

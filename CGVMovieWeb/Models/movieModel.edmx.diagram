@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="04e47b3c9d84492ea2e4aedf453ee19d" Name="Diagram1">
+        <EntityTypeShape EntityType="CGV_BinhDuong_SquareModel.Movy" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="CGV_BinhDuong_SquareModel.Seat" Width="1.5" PointX="5.25" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="CGV_BinhDuong_SquareModel.Showtime" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="CGV_BinhDuong_SquareModel.Ticket" Width="1.5" PointX="7.5" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="CGV_BinhDuong_SquareModel.User" Width="1.5" PointX="5.25" PointY="5.25" IsExpanded="true" />
+        <AssociationConnector Association="CGV_BinhDuong_SquareModel.FK__Showtimes__Movie__398D8EEE" ManuallyRouted="false" />
+        <AssociationConnector Association="CGV_BinhDuong_SquareModel.FK__Seats__ShowtimeI__3D5E1FD2" ManuallyRouted="false" />
+        <AssociationConnector Association="CGV_BinhDuong_SquareModel.FK__Tickets__SeatID__44FF419A" ManuallyRouted="false" />
+        <AssociationConnector Association="CGV_BinhDuong_SquareModel.FK__Tickets__Showtim__440B1D61" ManuallyRouted="false" />
+        <AssociationConnector Association="CGV_BinhDuong_SquareModel.FK__Tickets__UserID__4316F928" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="CGV_BinhDuong_SquareModel.sysdiagram" Width="1.5" PointX="2" PointY="4.375" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

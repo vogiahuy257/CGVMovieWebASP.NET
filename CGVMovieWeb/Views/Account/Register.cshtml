@@ -1,0 +1,184 @@
+﻿@model CGVMovieWeb.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/Login.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="custom-main card shadow">
+                <div class="card-body">
+                    <h3 class="text-center mb-2">Đăng Ký</h3>
+                    <form id="signupForm" method="post" action="@Url.Action("Register", "Account")">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-2">
+                            <label for="signupUsername" class="form-label">Tên đăng nhập</label>
+                            <input type="text" class="form-control" id="signupUsername" name="Username" placeholder="Nhập tên đăng nhập" required>
+                        </div>
+                        <div class="mb-2">
+                            <label for="signupFullName" class="form-label">Họ và Tên</label>
+                            <input type="text" class="form-control" id="signupFullName" name="FullName" placeholder="Nhập họ và tên" required>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="signupPassword" class="form-label">Mật khẩu</label>
+                            <div class="input-group position-relative">
+                                <input type="password" class="form-control rounded" id="signupPassword" name="Password" placeholder="Nhập mật khẩu của bạn" required>
+                                <button class="btn btn-outline-secondary" style="border-top-right-radius: 0.3rem; border-bottom-right-radius: 0.3rem; position: absolute; right: 0; z-index: 50;" type="button" id="toggleSignupPassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="">
+                            <label for="signupConfirmPassword" class="form-label">Xác nhận mật khẩu</label>
+                            <div class="input-group position-relative">
+                                <input type="password" class="form-control rounded" id="signupConfirmPassword" name="ConfirmPassword" placeholder="Xác nhận mật khẩu của bạn" required>
+                                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                                <button class="btn btn-outline-secondary" style="border-top-right-radius: 0.3rem; border-bottom-right-radius: 0.3rem; position: absolute; right: 0; z-index: 50;" type="button" id="toggleConfirmPassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="mt-2 btn btn-success w-100">Đăng Ký</button>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <small>Đã có tài khoản? <a href="/Account/Login">Đăng nhập ngay</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("signupForm");
+        const usernameField = document.getElementById("signupUsername");
+        const fullNameField = document.getElementById("signupFullName");
+        const passwordField = document.getElementById("signupPassword");
+        const confirmPasswordField = document.getElementById("signupConfirmPassword");
+         const togglePasswordButton = document.getElementById("toggleSignupPassword");
+    const toggleConfirmPasswordButton = document.getElementById("toggleConfirmPassword");
+
+
+        // Toggle visibility for password fields
+        togglePasswordButton.addEventListener("click", function () {
+            // Toggle the type of the password field between 'password' and 'text'
+            const type = passwordField.type === "password" ? "text" : "password";
+            passwordField.type = type;
+
+            // Change the icon based on the visibility state
+            this.innerHTML = type === "password" ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+        });
+
+        toggleConfirmPasswordButton.addEventListener("click", function () {
+            // Toggle the type of the confirm password field between 'password' and 'text'
+            const type = confirmPasswordField.type === "password" ? "text" : "password";
+            confirmPasswordField.type = type;
+
+            // Change the icon based on the visibility state
+            this.innerHTML = type === "password" ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+        });
+
+        // Xử lý sự kiện 'submit'
+        form.addEventListener("submit", function (e) {
+            e.preventDefault(); // Ngăn chặn gửi form mặc định
+
+            // Reset trạng thái lỗi
+            resetValidation(usernameField);
+            resetValidation(fullNameField);
+            resetValidation(passwordField);
+            resetValidation(confirmPasswordField);
+
+            let isValid = true;
+
+            // Kiểm tra tên đăng nhập
+            if (!usernameField.value.trim()) {
+                showValidationError(usernameField, "Vui lòng nhập tên đăng nhập.");
+                isValid = false;
+            }
+
+            // Kiểm tra họ và tên
+            if (!fullNameField.value.trim()) {
+                showValidationError(fullNameField, "Vui lòng nhập họ và tên.");
+                isValid = false;
+            }
+
+            // Kiểm tra mật khẩu
+            if (!passwordField.value.trim()) {
+                showValidationError(passwordField, "Vui lòng nhập mật khẩu.");
+                isValid = false;
+            } else if (passwordField.value.length < 6) {
+                showValidationError(passwordField, "Mật khẩu phải có ít nhất 6 ký tự.");
+                isValid = false;
+            }
+
+            // Kiểm tra xác nhận mật khẩu
+            if (!confirmPasswordField.value.trim()) {
+                showValidationError(confirmPasswordField, "Vui lòng xác nhận mật khẩu.");
+                isValid = false;
+            } else if (passwordField.value !== confirmPasswordField.value) {
+                showValidationError(confirmPasswordField, "Mật khẩu không khớp.");
+                isValid = false;
+            }
+
+            // Nếu hợp lệ, submit form
+            if (isValid) {
+                form.submit();
+            }
+        });
+
+        // Xử lý sự kiện 'blur' để kiểm tra ngay khi người dùng rời trường nhập liệu
+        [usernameField, fullNameField, passwordField, confirmPasswordField].forEach((field) => {
+            field.addEventListener("blur", function () {
+                // Kiểm tra trường cụ thể khi rời khỏi
+                validateField(field);
+            });
+        });
+
+        // Hàm kiểm tra từng trường
+        function validateField(input) {
+            resetValidation(input);
+            if (input.id === "signupUsername" && !input.value.trim()) {
+                showValidationError(input, "Vui lòng nhập tên đăng nhập.");
+            }
+            if (input.id === "signupFullName" && !input.value.trim()) {
+                showValidationError(input, "Vui lòng nhập họ và tên.");
+            }
+            if (input.id === "signupPassword") {
+                if (!input.value.trim()) {
+                    showValidationError(input, "Vui lòng nhập mật khẩu.");
+                } else if (input.value.length < 6) {
+                    showValidationError(input, "Mật khẩu phải có ít nhất 6 ký tự.");
+                }
+            }
+            if (input.id === "signupConfirmPassword") {
+                if (!input.value.trim()) {
+                    showValidationError(input, "Vui lòng xác nhận mật khẩu.");
+                } else if (input.value !== passwordField.value) {
+                    showValidationError(input, "Mật khẩu không khớp.");
+                }
+            }
+        }
+
+        // Hàm hiển thị thông báo lỗi
+        function showValidationError(input, message) {
+            const feedback = document.createElement("p");
+            feedback.className = "invalid-feedback";
+            feedback.textContent = message;
+            input.classList.add("is-invalid");
+            input.parentNode.appendChild(feedback);
+        }
+
+        // Hàm reset trạng thái lỗi
+        function resetValidation(input) {
+            input.classList.remove("is-invalid");
+            const feedback = input.parentNode.querySelector(".invalid-feedback");
+            if (feedback) {
+                feedback.remove();
+            }
+        }
+    });
+</script>

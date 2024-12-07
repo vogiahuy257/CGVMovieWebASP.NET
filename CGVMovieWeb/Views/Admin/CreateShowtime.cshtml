@@ -1,0 +1,59 @@
+﻿@model CGVMovieWeb.Models.Showtime
+
+@{
+    ViewBag.Title = "Thêm Lịch Chiếu";
+    Layout = "~/Views/Shared/LayoutAdmin.cshtml";
+}
+
+<h2 class="text-center mb-4">Thêm Lịch Chiếu</h2>
+
+<div class="container card shadow-sm rounded-3">
+    <div class="card-body">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <!-- Chọn Phim -->
+            <div class="mb-3">
+                <label for="MovieID" class="form-label d-flex align-items-center">
+                    <i class="bi bi-film me-2"></i> Chọn Phim
+                </label>
+                @Html.DropDownListFor(m => m.MovieID, (SelectList)ViewBag.MovieID, "Chọn Phim", new { @class = "form-control rounded-3 shadow-sm" })
+            </div>
+
+            <!-- Ngày Chiếu -->
+            <div class="mb-3">
+                <label for="ShowDate" class="form-label d-flex align-items-center">
+                    <i class="bi bi-calendar3 me-2"></i> Ngày Chiếu
+                </label>
+                @Html.EditorFor(m => m.ShowDate, new { htmlAttributes = new { @class = "form-control rounded-3 shadow-sm", type = "date" } })
+            </div>
+
+            <!-- Thời Gian -->
+            <div class="mb-3">
+                <label for="StartTime" class="form-label d-flex align-items-center">
+                    <i class="bi bi-clock me-2"></i> Thời Gian
+                </label>
+                @Html.EditorFor(m => m.StartTime, new { htmlAttributes = new { @class = "form-control rounded-3 shadow-sm", type = "time" } })
+            </div>
+
+            <!-- Phòng -->
+            <div class="mb-3">
+                <label for="Room" class="form-label d-flex align-items-center">
+                    <i class="bi bi-door-closed me-2"></i> Phòng
+                </label>
+                @Html.TextBoxFor(m => m.Room, new { @class = "form-control rounded-3 shadow-sm", placeholder = "Nhập số phòng chiếu" })
+            </div>
+
+            <!-- Nút Lưu -->
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-success rounded-3 shadow-sm me-2">
+                    <i class="bi bi-save me-1"></i> Lưu
+                </button>
+                <a href="@Url.Action("ShowtimesList", "Admin")" class="btn btn-secondary rounded-3 shadow-sm">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Quay Lại
+                </a>
+            </div>
+        }
+    </div>
+</div>

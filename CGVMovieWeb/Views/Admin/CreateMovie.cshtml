@@ -1,0 +1,104 @@
+﻿@model CGVMovieWeb.Models.MovieViewModel
+
+@{
+    ViewBag.Title = "Admin";
+    Layout = "~/Views/Shared/LayoutAdmin.cshtml";
+}
+
+<h2 class="text-center mb-4">Thêm Phim Mới</h2>
+
+<!-- Card containing the form -->
+<div class="container card shadow-sm rounded-3">
+    <div class="card-body">
+        <form asp-action="CreateMovie" method="post" enctype="multipart/form-data">
+            <!-- Tên Phim -->
+            <div class="mb-3">
+                <label for="Title" class="form-label d-flex align-items-center">
+                    <i class="bi bi-film me-2"></i> Tên Phim
+                </label>
+                <input type="text" id="Title" name="Title" class="form-control rounded-3 shadow-sm" value="@Model.Title" required />
+            </div>
+
+            <!-- Thể Loại -->
+            <div class="mb-3">
+                <label for="Genre" class="form-label d-flex align-items-center">
+                    <i class="bi bi-tag me-2"></i> Thể Loại
+                </label>
+                <input type="text" id="Genre" name="Genre" class="form-control rounded-3 shadow-sm" value="@Model.Genre" required />
+            </div>
+
+            <!-- Thời Lượng -->
+            <div class="mb-3">
+                <label for="Duration" class="form-label d-flex align-items-center">
+                    <i class="bi bi-clock me-2"></i> Thời Lượng (phút)
+                </label>
+                <input type="number" id="Duration" name="Duration" class="form-control rounded-3 shadow-sm" value="@Model.Duration" required />
+            </div>
+
+            <!-- Mô Tả -->
+            <div class="mb-3">
+                <label for="Description" class="form-label d-flex align-items-center">
+                    <i class="bi bi-pencil-square me-2"></i> Mô Tả
+                </label>
+                <textarea id="Description" name="Description" class="form-control rounded-3 shadow-sm">@Model.Description</textarea>
+            </div>
+
+            <!-- Ngày Phát Hành -->
+            <div class="mb-3">
+                <label for="ReleaseDate" class="form-label d-flex align-items-center">
+                    <i class="bi bi-calendar-date me-2"></i> Ngày Phát Hành
+                </label>
+                <input type="date" id="ReleaseDate" name="ReleaseDate" class="form-control rounded-3 shadow-sm" value="@Model.ReleaseDate?.ToString(" yyyy-MM-dd")" />
+            </div>
+
+            <!-- Giá Vé -->
+            <div class="mb-3">
+                <label for="TicketPrice" class="form-label d-flex align-items-center">
+                    <i class="bi bi-cash me-2"></i> Giá Vé (VND)
+                </label>
+                <input type="number" id="TicketPrice" name="TicketPrice" class="form-control rounded-3 shadow-sm" value="@Model.TicketPrice" required />
+            </div>
+
+            <!-- Hình Ảnh -->
+            <div class="mb-3">
+                <label for="ImageFile" class="form-label d-flex align-items-center">
+                    <i class="bi bi-image me-2"></i> Hình Ảnh
+                </label>
+                <input type="file" id="ImageFile" name="ImageFile" class="form-control rounded-3 shadow-sm" accept="image/*" onchange="previewImage(event)" />
+
+                <!-- Image Preview -->
+                <div id="imagePreview" class="mt-3" style="display:none;">
+                    <img id="previewImg" src="" alt="Image Preview" class="img-fluid rounded-3 shadow-sm" />
+                </div>
+            </div>
+
+            <!-- Nút Lưu và Hủy -->
+            <div class="d-flex justify-content-between mt-4">
+                <button type="submit" class="btn btn-primary rounded-3 shadow-sm">
+                    <i class="bi bi-save me-2"></i> Lưu
+                </button>
+                <a href="@Url.Action("MoviesList", "Admin")" class="btn btn-secondary rounded-3 shadow-sm">
+                    <i class="bi bi-x-circle me-2"></i> Hủy
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function previewImage(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const preview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            previewImg.src = e.target.result;
+            preview.style.display = 'block'; // Show the image preview
+        };
+
+        if (file) {
+            reader.readAsDataURL(file); // Convert file to Data URL
+        }
+    }
+</script>

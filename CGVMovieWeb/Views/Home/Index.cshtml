@@ -1,0 +1,86 @@
+﻿@model IEnumerable<CGVMovieWeb.Models.Movy>
+
+@{
+    ViewBag.Title = "Trang Chủ";
+}
+
+<h1 class="text-title" style="font-size:28px;">Danh sách phim</h1>
+
+<!-- Form tìm kiếm -->
+<div class="d-flex justify-content-center align-items-center gap-2 mx-2" style="width:80%; padding: 8px; border-radius: 8px;">
+    <div class="w-75">
+        <h5 class="mb-1" style="color: light-dark(#222222,var(--color-yellow)); white-space: nowrap; font-size:16px;">Tìm Kiếm:</h5>
+
+        <!-- Ô nhập và nút tìm kiếm -->
+        <div class="input-group ml-2" style="position:relative;">
+            <input type="text" id="searchInput" class="form-control rounded-3" placeholder="Nhập tên phim..." aria-label="Tìm kiếm phim" style="border-radius: 4px;">
+            <i class="bi bi-search" style="position:absolute; right:8px; top:50%; transform:translateY(-50%);"></i>
+        </div>
+    </div>
+
+    <!-- Dropdown chọn chủ đề -->
+    <div class="w-25 form-group" >
+        <label for="genreSelect" style="margin-bottom: 0;">Chọn chủ đề:</label>
+        <div style="position: relative;">
+            <select id="genreSelect" class="form-control ml-2" style="border-radius: 4px;">
+                <option value="">Tất cả</option>
+                @foreach (var genre in ViewBag.Genres)
+                {
+                    <option value="@genre">@genre</option>
+                }
+            </select>
+            <!-- Biểu tượng bộ lọc -->
+            <i class="bi bi-funnel-fill" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%);"></i>
+        </div>
+    </div>
+
+</div>
+
+
+
+<ul id="movieList" class="hidden-scrollbar" style="width:90%; list-style: none; padding-bottom:90px;">
+    @foreach (var movie in Model)
+    {
+        <li class="movie-item mt-2" data-genre="@movie.Genre">
+            <a href="@Url.Action("ChiTiet", "Home", new { id = movie.MovieID })" class="xemchitiet">
+                <img src="~/images/@movie.ImageLink" class="card-img-top" alt="@movie.Title">
+                <div class="movie-content-bottom">
+                    <h5 class="card-title">@movie.Title</h5>
+                        <a href="@Url.Action("DatVe", "Showtimes", new { movieId = movie.MovieID })" class="btn-datve">
+                            <i class="bi bi-ticket-perforated-fill"></i> Đặt Vé
+                        </a>
+                </div>
+            </a>
+        </li>
+    }
+</ul>
+
+<script>
+    document.getElementById('searchInput').addEventListener('input', function () {
+        const query = this.value.toLowerCase();
+        const movieItems = document.querySelectorAll('.movie-item');
+
+        movieItems.forEach(function (item) {
+            const title = item.querySelector('.card-title').textContent.toLowerCase();
+            if (title.includes(query)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+
+    document.getElementById('genreSelect').addEventListener('change', function () {
+        const selectedGenre = this.value.toLowerCase();
+        const movieItems = document.querySelectorAll('.movie-item');
+
+        movieItems.forEach(function (item) {
+            const genre = item.getAttribute('data-genre').toLowerCase();
+            if (selectedGenre === "" || genre === selectedGenre) {
+                item.style.display = 'block'; // Hiển thị phim nếu khớp chủ đề
+            } else {
+                item.style.display = 'none'; // Ẩn phim nếu không khớp
+            }
+        });
+    });
+</script>

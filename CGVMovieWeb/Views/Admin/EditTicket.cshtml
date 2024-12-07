@@ -1,0 +1,103 @@
+﻿@model CGVMovieWeb.Models.TicketViewModel
+
+@{
+    ViewBag.Title = "Sửa Vé";
+    Layout = "~/Views/Shared/LayoutAdmin.cshtml";
+}
+
+<h2 class="text-center mb-4">Sửa Vé</h2>
+
+<div class="container card shadow-sm rounded-3">
+    <div class="card-body">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.TicketID)
+
+            <!-- Tên Người Dùng -->
+            <div class="mb-3">
+                <label for="Username" class="form-label d-flex align-items-center">
+                    <i class="bi bi-person me-2"></i> Tên Người Dùng
+                </label>
+                @Html.TextBoxFor(m => m.Username, new { @class = "form-control rounded-3 shadow-sm", @readonly = "readonly" })
+            </div>
+
+            <!-- Tên Phim -->
+            <div class="mb-3">
+                <label for="MovieTitle" class="form-label d-flex align-items-center">
+                    <i class="bi bi-film me-2"></i> Tên Phim
+                </label>
+                @Html.TextBoxFor(m => m.MovieTitle, new { @class = "form-control rounded-3 shadow-sm", @readonly = "readonly" })
+            </div>
+
+            <!-- Ngày Chiếu -->
+            <div class="mb-3">
+                <label for="ShowDate" class="form-label d-flex align-items-center">
+                    <i class="bi bi-calendar3 me-2"></i> Ngày Chiếu
+                </label>
+                @Html.TextBoxFor(m => m.ShowDate, new { @class = "form-control rounded-3 shadow-sm", @readonly = "readonly" })
+            </div>
+
+            <!-- Giờ Chiếu -->
+            <div class="mb-3">
+                <label for="StartTime" class="form-label d-flex align-items-center">
+                    <i class="bi bi-clock me-2"></i> Giờ Chiếu
+                </label>
+                @Html.TextBoxFor(m => m.StartTime, new { @class = "form-control rounded-3 shadow-sm", @readonly = "readonly" })
+            </div>
+
+            <!-- Phòng -->
+            <div class="mb-3">
+                <label for="Room" class="form-label d-flex align-items-center">
+                    <i class="bi bi-door-closed me-2"></i> Phòng
+                </label>
+                @Html.TextBoxFor(m => m.Room, new { @class = "form-control rounded-3 shadow-sm", placeholder = "Nhập số phòng chiếu" })
+            </div>
+
+            <!-- Ghế đã chọn -->
+            <div class="mb-3">
+                <label for="SeatNumber" class="form-label d-flex align-items-center">
+                    <i class="bi bi-grid me-2"></i> Ghế đã chọn
+                </label>
+                @Html.TextBoxFor(m => m.SeatNumber, new { @class = "form-control rounded-3 shadow-sm", @readonly = "readonly" })
+            </div>
+
+            <!-- Giá -->
+            <div class="mb-3">
+                <label for="Price" class="form-label d-flex align-items-center">
+                    <i class="bi bi-cash-stack me-2"></i> Giá
+                </label>
+                @Html.TextBoxFor(m => m.Price, new { @class = "form-control rounded-3 shadow-sm", placeholder = "Nhập giá vé" })
+            </div>
+
+            <!-- Phương thức thanh toán -->
+            <div class="mb-3">
+                <label for="PaymentMethod" class="form-label d-flex align-items-center">
+                    <i class="bi bi-credit-card me-2"></i> Phương thức thanh toán
+                </label>
+                <select id="PaymentMethod" name="PaymentMethod" class="form-control rounded-3 shadow-sm">
+                    <option value="PayAtTheCounter" @(Model.PaymentMethod == "PayAtTheCounter" ? "selected" : "")>Thanh toán tại quầy</option>
+                    <option value="Transfer" @(Model.PaymentMethod == "Transfer" ? "selected" : "")>Chuyển khoản</option>
+                </select>
+            </div>
+
+            <!-- Xác nhận thanh toán -->
+            <div class="form-check mb-4">
+                @Html.CheckBoxFor(m => m.PaymentConfirmation, new { @class = "form-check-input" })
+                <label class="form-check-label" for="PaymentConfirmation">
+                    Đã xác nhận thanh toán
+                </label>
+            </div>
+
+            <!-- Nút Lưu và Hủy -->
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary rounded-3 shadow-sm me-2">
+                    <i class="bi bi-save me-1"></i> Lưu
+                </button>
+                <a href="@Url.Action("TicketsList", "Admin")" class="btn btn-secondary rounded-3 shadow-sm">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Hủy
+                </a>
+            </div>
+        }
+    </div>
+</div>

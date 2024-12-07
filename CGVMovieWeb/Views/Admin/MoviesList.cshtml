@@ -1,0 +1,79 @@
+﻿@model IEnumerable<CGVMovieWeb.Models.MovieViewModel>
+
+@{
+    ViewBag.Title = "Movies List";
+    Layout = "~/Views/Shared/LayoutAdmin.cshtml";
+}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-dark">Danh Sách Phim</h2>
+        <a href="@Url.Action("CreateMovie", "Admin")" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Thêm Phim Mới
+        </a>
+    </div>
+
+    <!-- Bảng với nền trắng và chữ màu đen -->
+    <div class="table-responsive mt-2">
+        <table class="table table-striped table-bordered rounded-2" style="background-color: var(--primary-dark); color: var(--color-yellow);">
+            <thead class="text-center" style="background-color: var(--color-yellow); color: var(--primary-dark);">
+                <tr>
+                    <th>Tên Phim</th>
+                    <th>Thể Loại</th>
+                    <th>Thời Lượng</th>
+                    <th>Mô Tả</th>
+                    <th>Ngày Phát Hành</th>
+                    <th>Đánh Giá</th>
+                    <th>Giá Vé</th>
+                    <th class="text-center">Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                @foreach (var movie in Model)
+                {
+                    <tr>
+                        <td>@movie.Title</td>
+                        <td>@movie.Genre</td>
+                        <td>@movie.Duration phút</td>
+                        <td>
+                            <div style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="@movie.Description">
+                                @movie.Description
+                            </div>
+                        </td>
+                        <td>@(movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("dd/MM/yyyy") : "N/A")</td>
+                        <td>@(movie.Rating.HasValue ? movie.Rating.Value.ToString("0.0") : "Chưa có đánh giá")</td>
+                        <td>@string.Format("{0:0,0} VND", movie.TicketPrice)</td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a href="@Url.Action("EditMovie", "Admin", new { id = movie.MovieID })" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil"></i> Sửa
+                                </a>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete(@movie.MovieID)">
+                                    <i class="bi bi-trash"></i> Xóa
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+<script>
+    function confirmDelete(movieId) {
+        if (confirm('Bạn có chắc chắn muốn xóa phim này?')) {
+            // Tạo form POST động để xóa
+            var form = document.createElement("form");
+            form.method = "POST";
+            form.action = '@Url.Action("DeleteMovie", "Admin")';
+
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "id";
+            input.value = movieId;
+
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>

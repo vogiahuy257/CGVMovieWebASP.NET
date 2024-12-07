@@ -1,0 +1,135 @@
+﻿@model IEnumerable<CGVMovieWeb.Models.TicketViewModel>
+@{
+    ViewBag.Title = "Admin";
+    Layout = "~/Views/Shared/LayoutAdmin.cshtml";
+}
+<div class="d-flex align-items-center">
+    <h2>Danh sách vé đã đặt</h2>
+    <!-- Nút đặt vé mới -->
+    <div style="margin-left:auto;" class="d-flex justify-content-center align-items-center">
+        <a href="@Url.Action("CreateTicket", "Admin")" class="btn btn-success">
+            <i class="bi bi-ticket-detailed"></i> Đặt vé mới
+        </a>
+        <form method="get" action="@Url.Action("TicketsList")" class="d-flex justify-content-center align-items-center" style="margin-left:0.5rem;">
+            <input type="text" name="searchTerm" placeholder="Tìm kiếm..." class="form-control" />
+            <button type="submit" class="btn btn-primary text-center" style="margin-left:0.5rem;">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Table with custom colors -->
+<div class="table-responsive mt-2">
+    <table class="table table-striped table-bordered rounded-2" style="background-color: var(--primary-dark); color: var(--color-yellow);">
+        <thead class="text-center" style="background-color: var(--color-yellow); color: var(--primary-dark);">
+            <tr>
+                <th scope="col">Mã Vé</th>
+                <th scope="col">Tên Người Dùng</th>
+                <th scope="col">Tên Phim</th>
+                <th scope="col">Ngày Chiếu</th>
+                <th scope="col">Giờ Chiếu</th>
+                <th scope="col">Phòng</th>
+                <th scope="col">Ghế</th>
+                <th scope="col">Giá Tiền</th>
+                <th scope="col">Ngày Mua</th>
+                <th scope="col">Phương Thức Thanh Toán</th>
+                <th scope="col">Xác Nhận Thanh Toán</th>
+                <th scope="col">Hành Động</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            @foreach (var ticket in Model)
+            {
+                <tr>
+                    <td>@ticket.TicketID</td>
+                    <td>@ticket.Username</td>
+                    <td>@ticket.MovieTitle</td>
+                    <td>@ticket.ShowDate.ToString("dd/MM/yyyy")</td>
+                    <td>@ticket.StartTime</td>
+                    <td>@ticket.Room</td>
+                    <td>@ticket.SeatNumber</td>
+                    <td>@ticket.Price.ToString("N0") VNĐ</td>
+                    <td>@ticket.PurchaseDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@(ticket.PaymentMethod == "PayAtTheCounter" || ticket.PaymentMethod == "Thanh Toán Tại Quầy" ? "Thanh Toán Tại Quầy" : "Chuyển Khoản")</td>
+                    <td>@(ticket.PaymentConfirmation ? "Đã Thanh Toán" : "Chưa Thanh Toán")</td>
+                    <td>
+                        <div class="btn-group">
+                            <!-- Liên kết sửa -->
+                            <a href="@Url.Action("EditTicket", "Admin", new { id = ticket.TicketID })" class="d-flex gap-2 btn btn-warning btn-sm">
+                                <i class="bi bi-pencil-square"></i> Sửa
+                            </a>
+                            <!-- Nút xóa -->
+                            <button type="button" class="d-flex gap-2 btn btn-danger btn-sm" data-id="@ticket.TicketID" onclick="deleteTicket(this)">
+                                <i class="bi bi-trash"></i> Xóa
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    function deleteTicket(button) {
+        var ticketID = button.getAttribute('data-id');
+        var confirmation = confirm('Bạn có chắc chắn muốn xóa vé này không?');
+
+        if (confirmation) {
+            // Gửi yêu cầu xóa qua AJAX
+            fetch(`/Admin/DeleteTicket/${ticketID}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Đảm bảo bảo mật CSRF trong Laravel
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Vé đã được xóa thành công!');
+                        // Tùy chọn: Xóa vé khỏi bảng mà không cần tải lại trang
+                        button.closest('tr').remove();
+                    } else {
+                        alert('Có lỗi xảy ra khi xóa vé!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Có lỗi xảy ra:', error);
+                    alert('Có lỗi xảy ra khi xóa vé!');
+                });
+        }
+    }
+</script>
+
+<style>
+    /* Custom styles for table and button color */
+    .table-primary {
+        background-color: var(--primary-light);
+    }
+
+    .btn-primary {
+        background-color: var(--primary-dark);
+        border-color: var(--primary-dark);
+    }
+
+        .btn-primary:hover {
+            background-color: var(--primary-gray);
+        }
+
+    .btn-warning {
+        background-color: #FFC107;
+        border-color: #FFC107;
+    }
+
+        .btn-warning:hover {
+            background-color: #FFB300;
+        }
+
+    .btn-danger {
+        background-color: var(--color-red);
+        border-color: var(--color-red);
+    }
+
+        .btn-danger:hover {
+            background-color: #e60000;
+        }
+</style>

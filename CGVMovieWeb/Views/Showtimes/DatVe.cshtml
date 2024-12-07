@@ -1,0 +1,85 @@
+﻿@model CGVMovieWeb.Models.DatVeViewModel
+
+@{
+    ViewBag.movieOpen = "active";
+    ViewBag.Title = "Đặt Vé cho " + Model.Movie.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center w-100 h-100 my-5" style="">
+    <div class="m-auto d-flex justify-content-center" 
+         style="width: 90%; height: 100%; position: relative; background-color: light-dark(#fff, var(--color-yellow)); padding: 36px 0px; border-radius: 0.75rem; border: 1.5px solid light-dark(#222222,var(--color-yellow)) "
+        >
+        <div class="w-50 h-100" style="border-right: 3.5px dashed #959595a6">
+            <h2 class="text-center mb-4">@Model.Movie.Title</h2>
+            <div class="d-flex justify-content-center align-content-center" style="flex-wrap:nowrap;">
+                <div>
+                    <img src="~/images/@Model.Movie.ImageLink"  alt="@Model.Movie.Title" style="background-position:center; object-fit: cover; width: 240px; height: 290px; border-radius:0.8rem; border: 1.5px solid #222222;">
+                </div>
+                <div class="" style="margin-left: 8px; flex:0 1 auto;">
+                    <h5>Thời gian: <span class="text-muted">@Model.Movie.Duration minutes</span></h5>
+                    <h5>Giá vé: <span class="text-muted">@Model.Movie.TicketPrice.Value.ToString("N0") VND</span></h5>
+                    <h5>Thể loại: <span class="text-muted">@Model.Movie.Genre</span></h5>
+                    <h5>Mô tả:</h5>
+                    <p>@Model.Movie.Description</p>
+                    <h5>Đánh giá: <span class="text-warning">@((Model.Movie.Rating.HasValue) ? Model.Movie.Rating.Value.ToString("0.0") : "Chưa có đánh giá")</span></h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-50 h-100">
+            <h4 class="text-center">Chọn Khung Giờ:</h4>
+            <div style="">
+                <ul style="display: flex; justify-content:center; gap: 4px;">
+                    @foreach (var showtime in Model.Showtimes)
+                    {
+                        <a href="/Seats/Select?showtimeId=@showtime.ShowtimeID" style="background-color: transparent; color: light-dark(#222222,var(--color-yellow)); margin: 4px;">
+                        <li class="d-flex justify-content-center align-items-center" style="width: 80px; height: 50px; background-color: transparent; border: 1px solid light-dark(#222222,var(--color-yellow));">
+
+                            <span class="ml-2 text-center">@showtime.StartTime.Value.ToString(@"hh\:mm")</span>
+
+                        </li>
+                        </a>
+
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <a href="@Url.Action("Back", "Home")" class="btn-back">
+            <svg xmlns="http://www.w3.org/2000/svg" height="12px" viewBox="0 -960 960 960" width="12px" fill="#fff">
+                <path d="M384-96 0-480l384-384 68 68-316 316 316 316-68 68Z" />
+            </svg>
+            quay lại
+        </a>
+    </div>
+</div>
+
+<style>
+    .btn-back {
+        position: absolute;
+        bottom: -48px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: light-dark(#222222,var(--color-yellow));
+        color: #ffffff;
+        padding: 4px 16px;
+        border-radius: 0.5rem;
+        transition: background-color 0.3s;
+        display: flex;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .btn-back svg
+    {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    .btn-back:hover {
+        background-color: red;
+    } 
+</style>
