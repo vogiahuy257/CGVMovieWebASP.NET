@@ -4,6 +4,8 @@
 ## 🌟 Giới thiệu  
 **CGVMovieWeb** là một dự án web đặt vé xem phim trực tuyến, xây dựng bằng **ASP.NET**, mang đến trải nghiệm thân thiện và hiện đại cho người dùng.  
 
+## 🌐 Link trang web  
+[CGVMovieWeb Demo](http://moviecgvdemo.somee.com/)
 ---
 
 ## ⚡ Tính năng chính  
@@ -25,7 +27,7 @@
 ## 🚀 Cài đặt  
 1. **Clone dự án:**  
    ```bash
-   git clone https://github.com/your-repository/CGVMovieWeb.git
+   git clone https://github.com/vogiahuy257/CGVMovieWebASP.NET.git
    ```  
 2. **Cấu hình database:** Cập nhật connection string trong `appsettings.json`.  
 3. **Chạy dự án:**  
